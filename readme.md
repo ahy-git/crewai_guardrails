@@ -1,64 +1,64 @@
-# 🤖 CrewAI + Guardrails: Validação de JSON com Reescrita Inteligente
+# 🤖 CrewAI + Guardrails: JSON Validation with Intelligent Rewriting
 
-Este projeto demonstra como usar o **CrewAI (Flow)** em conjunto com **Guardrails.ai** para gerar, validar e corrigir automaticamente JSONs estruturados com base em um schema pré-definido.
+This project demonstrates how to use **CrewAI (Flow)** together with **Guardrails.ai** to generate, validate, and automatically fix structured JSON outputs based on a predefined schema.
 
-A arquitetura implementa um ciclo completo de agentes que:
+The architecture implements a complete cycle of agents that:
 
-1. Geram perfis em formato JSON (com campos `name`, `age`, `profession`)
-2. Validam a saída usando um `Guardrails` schema (Pydantic)
-3. Em caso de falha, usam outro agente para **reescrever o prompt** com base no erro retornado
-4. Repetem o ciclo até obter uma saída válida ou atingir o número máximo de tentativas (`max_retries=10`)
+1. Generate profiles in JSON format (with fields `name`, `age`, `profession`)
+2. Validate the output using a `Guardrails` schema (via Pydantic)
+3. In case of failure, use another agent to **rewrite the prompt** based on the returned error
+4. Repeat the cycle until a valid output is generated or the maximum number of retries is reached (`max_retries=10`)
 
 ---
 
-## 🧩 Componentes
+## 🧩 Components
 
 - **`crew_profile_generator.py`**  
-  Agente responsável por gerar o JSON a partir do prompt fornecido.
+  Agent responsible for generating JSON from the provided prompt.
 
 - **`tool_guardrails_validator.py`**  
-  Tool que valida a saída usando `Guardrails` e um schema definido via `Pydantic`.
+  Tool that validates the output using `Guardrails` and a schema defined with `Pydantic`.
 
 - **`crew_prompt_rewriter.py`**  
-  Agente que recebe a mensagem de erro do Guardrails e reescreve o prompt para nova tentativa.
+  Agent that receives the error message from Guardrails and rewrites the prompt for a new attempt.
 
 - **`main_flow.py`**  
-  Orquestrador com `CrewAI.Flow`, controlando a execução do ciclo com `@start`, `@router`, e `@listen`.
+  Orchestrator using `CrewAI.Flow`, controlling execution with `@start`, `@router`, and `@listen`.
 
 ---
 
-## ⚙️ Fluxo de Execução
+## ⚙️ Execution Flow
 
 ```mermaid
 flowchart TD
     Start([Start])
-    Gen[🔁 Geração de Perfil]
-    Validate[✅ Validação com Guardrails]
-    Success[🎉 Validação OK]
-    Rewrite[✍️ Reescrita de Prompt]
-    Retry[🔁 Retenta com Novo Prompt]
-    Fail[❌ Máx. Tentativas Atingido]
+    Gen[🔁 Profile Generation]
+    Validate[✅ Validation with Guardrails]
+    Success[🎉 Validation OK]
+    Rewrite[✍️ Prompt Rewriting]
+    Retry[🔁 Retry with New Prompt]
+    Fail[❌ Max Retries Reached]
 
     Start --> Gen
     Gen --> Validate
-    Validate -->|Válido| Success
-    Validate -->|Inválido| Rewrite
+    Validate -->|Valid| Success
+    Validate -->|Invalid| Rewrite
     Rewrite --> Retry
     Retry --> Gen
-    Validate -->|10 tentativas| Fail
+    Validate -->|10 attempts| Fail
 ````
 
 ---
 
-## 🚀 Como Executar
+## 🚀 How to Run
 
-1. Instale as dependências (recomenda-se usar virtualenv):
+1. Install dependencies (virtualenv is recommended):
 
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Execute o fluxo principal:
+2. Run the main flow:
 
 ```bash
 python main_flow.py
@@ -66,13 +66,16 @@ python main_flow.py
 
 ---
 
-## 🎯 Objetivo Educacional
+## 🎯 Educational Purpose
 
-Este projeto serve como base para entender:
+This project serves as a foundation to understand:
 
-* Integração de validação estrutural com LLMs
-* Controle de fluxo orientado a agentes com `CrewAI`
-* Reescrita iterativa de prompts com base em falhas reais
-* Uso prático de `Guardrails` com `Pydantic schemas`
+* Integration of structural validation with LLMs
+* Agent-oriented flow control using `CrewAI`
+* Iterative prompt rewriting based on real errors
+* Practical usage of `Guardrails` with `Pydantic schemas`
 
 ---
+
+```
+
